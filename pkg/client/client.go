@@ -147,6 +147,8 @@ func (c *Client) Create(ctx context.Context, namespace string, obj, result runti
 		Body(obj).
 		Do(ctx)
 
+	fmt.Printf("jiandao =  %#v	\n", resp)
+
 	warn := resp.Warnings()
 	if len(warn) > 0 {
 		fmt.Println("jiandao ===== agent:  " + warn[0].Agent)
