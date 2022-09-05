@@ -2,8 +2,10 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -137,15 +139,25 @@ func (c *Client) Create(ctx context.Context, namespace string, obj, result runti
 	defer c.setKind(result)
 	ctx, cancel := c.setupCtx(ctx, 0)
 	defer cancel()
-	err = c.RESTClient.Post().
+	resp := c.RESTClient.Post().
 		Prefix(c.prefix...).
 		NamespaceIfScoped(namespace, c.Namespaced).
 		Resource(c.resource).
 		VersionedParams(&opts, metav1.ParameterCodec).
 		Body(obj).
-		Do(ctx).
-		Into(result)
-	return
+		Do(ctx)
+
+	warn := resp.Warnings()
+	if len(warn) > 0 {
+		fmt.Println("jiandao ===== agent:  " + warn[0].Agent)
+		fmt.Println("jiandao ===== text:  " + warn[0].Text)
+		fmt.Println("jiandao ===== code:  ")
+		fmt.Println(warn[0].Code)
+		return errors.New(warn[0].Text)
+	}
+	fmt.Println("jiandao ===== error:  ")
+
+	return resp.Into(result)
 }
 
 func (c *Client) Update(ctx context.Context, namespace string, obj, result runtime.Object, opts metav1.UpdateOptions) (err error) {

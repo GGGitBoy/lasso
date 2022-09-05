@@ -3,6 +3,7 @@ module github.com/rancher/lasso
 go 1.17
 
 require (
+	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.1
 	k8s.io/apimachinery v0.24.1
 	k8s.io/client-go v0.24.1
