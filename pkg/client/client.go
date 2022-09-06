@@ -152,14 +152,7 @@ func (c *Client) Create(ctx context.Context, namespace string, obj, result runti
 	aData, _ := json.MarshalIndent(resp, "", "\t")
 	fmt.Println(string(aData))
 
-	sss, err := c.RESTClient.Post().
-		Prefix(c.prefix...).
-		NamespaceIfScoped(namespace, c.Namespaced).
-		Resource(c.resource).
-		VersionedParams(&opts, metav1.ParameterCodec).
-		Body(obj).
-		DoRaw(ctx)
-
+	sss, err := resp.Raw()
 	fmt.Println("jiandao ===== ")
 	fmt.Println(err)
 	fmt.Println(string(sss))
