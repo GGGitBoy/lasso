@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -147,7 +148,21 @@ func (c *Client) Create(ctx context.Context, namespace string, obj, result runti
 		Body(obj).
 		Do(ctx)
 
-	fmt.Printf("jiandao =  %#v	\n", resp)
+	fmt.Println("jiandao ～～～ ")
+	aData, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println(string(aData))
+
+	sss, err := c.RESTClient.Post().
+		Prefix(c.prefix...).
+		NamespaceIfScoped(namespace, c.Namespaced).
+		Resource(c.resource).
+		VersionedParams(&opts, metav1.ParameterCodec).
+		Body(obj).
+		DoRaw(ctx)
+
+	fmt.Println("jiandao ===== ")
+	fmt.Println(err)
+	fmt.Println(string(sss))
 
 	warn := resp.Warnings()
 	if len(warn) > 0 {
